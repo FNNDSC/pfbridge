@@ -4,6 +4,8 @@ pudb
 webob
 pynetdicom
 
+pftag
+
 # Database
 motor
 dnspython
