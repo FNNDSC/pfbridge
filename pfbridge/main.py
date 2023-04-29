@@ -10,7 +10,7 @@ from    fastapi.middleware.cors import CORSMiddleware
 from    base.router             import helloRouter_create
 
 from    routes.relayRouter      import router   as relay_router
-
+from    routes.credentialRouter import router   as credential_router
 from    os                      import path
 
 import  pudb
@@ -30,6 +30,14 @@ tags_metadata:list = [
             payloads. These payloads are "repacked" and relayed along, while
             downstream replies are returned to the original client after some
             simplifcation.
+            """
+    },
+    {
+        "name"          :   "Credentialling services",
+        "description"   :
+            """
+            Provide API endpoints for setting a vaultKey which is used to unlock
+            sensitive data.
             """
     },
     {
@@ -66,6 +74,9 @@ hello_router = helloRouter_create(
 )
 
 app.include_router( relay_router,
+                    prefix  = '/api/v1')
+
+app.include_router( credential_router,
                     prefix  = '/api/v1')
 
 app.include_router( hello_router,
