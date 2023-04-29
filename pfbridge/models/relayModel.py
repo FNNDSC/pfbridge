@@ -1,6 +1,6 @@
 str_description = """
 
-    The data models/schemas for the PACS QR collection.
+    The data models/schemas for comms with `pfbridge`.
 
 """
 
