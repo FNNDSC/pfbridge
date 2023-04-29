@@ -13,11 +13,12 @@ str_description = """
 from    fastapi             import  APIRouter, Query, HTTPException, BackgroundTasks, Request
 from    typing              import  List, Dict, Any, Union
 
-from    models              import  relayModel
+from    models              import  relayModel, credentialModel
 from    controllers         import  relayController
+from    routes              import  credentialRouter
 
 from    config              import  settings
-
+from    pftag               import  pftag
 import  pudb
 
 router          = APIRouter()
@@ -135,8 +136,10 @@ def analysis_update(
 
     Valid keys are:
 
+    * `analysisPipelineName` -- the name of an analysis pipeline to run (unused)
     * `analysisPluginName` -- the name of the plugin to run
     * `analysisPluginArgs` -- args to pass to the plugin
+    * `analysisPluginVersion` -- the plugin version to run
     * `clinicalUser` -- the name of the clinical user; this is the name within ChRIS.
     * `analysisFeedName`  -- the template feed name
 
@@ -145,10 +148,14 @@ def analysis_update(
     * `settings.Analysis`: The current Analysis settings
     """
     match key:
+        case 'analysisPipelineName':
+            settings.analysis.pipelineName  = value
         case 'analysisPluginName':
             settings.analysis.pluginName    = value
         case 'analysisPluginArgs':
             settings.analysis.pluginArgs    = value
+        case 'analysisPluginVersion':
+            settings.analysis.pluginVersion = value
         case 'clinicalUser':
             settings.analysis.clinicalUser  = value
         case 'analysisFeedName':
@@ -162,17 +169,41 @@ def analysis_update(
     GET the internal Analysis settings.
     '''
 )
-def analysis_values() -> settings.DylldAnalysis:
+def analysis_values(vaultKey:str = "") -> settings.DylldAnalysis:
     """
     Description
     -----------
 
-    Simply return the `analysis` settings class values.
+    Simply return the `analysis` settings class values. If the optional
+    `vaultKey` is provided, then unlock the vault and return any values
+    with sensitive information decoded.
 
     Returns
     -------
     * `settings.Analysis`: The current Analysis settings
     """
+    if vaultKey:
+        d_vaultAccess:credentialModel.credentialsStatus = credentialModel.credentialsStatus()
+        d_vaultAccess = credentialRouter.credentialAccess_check(vaultKey)
+        if d_vaultAccess.status:
+            decode:pftag.Pftag  = pftag.Pftag({})
+            addDict:bool = decode.lookupDict_add(
+                [
+                    {
+                        'CUBE':    {
+                            'usernameCUBE': settings.credentialsCUBE.usernameCUBE,
+                            'passwordCUBE': settings.credentialsCUBE.passwordCUBE
+                        },
+                        'orthanc':    {
+                            'usernameOrthanc': settings.credentialsOrthanc.usernameOrthanc,
+                            'passwordOrthanc': settings.credentialsOrthanc.passwordOrthanc
+                        }
+                    }
+                ]
+            )
+            d_decode:dict = decode(settings.analysis.pluginArgs)
+            if d_decode['status']:
+                settings.analysis.pluginArgs    = d_decode['result']
     return settings.analysis
 
 @router.post(
