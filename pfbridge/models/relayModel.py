@@ -12,6 +12,7 @@ from    pathlib             import Path
 import  pudb
 from    config              import settings
 
+
 class pacsService(BaseModel):
     """Name of the PACS service provider"""
     provider:str                    = 'orthanc'
@@ -65,16 +66,20 @@ class PACSqueryCore(BaseModel):
 
 class analysisModel(BaseModel):
     feed_name:str                  = settings.analysis.feedName
-    user_name:str                  = settings.analysis.clinicalUser
     plugin_name:str                = ""
     plugin_version:str             = ""
     plugin_params:str              = ""
     pipeline_name:str              = ""
 
+class cubeUserModel(BaseModel):
+    username:str                   = settings.credentialsCUBE.usernameCUBE
+    password:str                   = settings.credentialsCUBE.passwordCUBE
+
 class pflinkInput(BaseModel):
     pfdcm_info:pfdcmInfo            = pfdcmInfo()
     PACS_directive:PACSqueryCore    = PACSqueryCore()
     workflow_info:analysisModel     = analysisModel()
+    cube_user_info:cubeUserModel    = cubeUserModel()
 
 class clientPayload(BaseModel):
     imageMeta:PACSqueryCore         = PACSqueryCore()

@@ -51,6 +51,8 @@ class Map:
         pflinkPOST:relayModel.pflinkInput    = relayModel.pflinkInput()
         pflinkPOST.PACS_directive            = payload.imageMeta
         pflinkPOST.workflow_info.feed_name   = payload.analyzeFunction
+        pflinkPOST.cube_user_info.username   = settings.credentialsCUBE.usernameCUBE
+        pflinkPOST.cube_user_info.password   = settings.credentialsCUBE.passwordCUBE
         match payload.analyzeFunction:
             case 'dylld':
                 pflinkPOST.workflow_info.plugin_name   = settings.analysis.pluginName
