@@ -32,6 +32,8 @@ pfbridge_help() {
   cat << EOM
   The following aliases are available:
 
+  vault_check               - check the status of the vault
+
   pflinkURLs_get            - get the 'pflink' URLs with which 'pfbridge'
                               communicates
   testURL_set <URL>         - set the "test" URL of 'pflink'
@@ -44,10 +46,11 @@ pfbridge_help() {
                               any other value of <type> use the production API.
 
   NB:
-  * Set the 'pfbridge' environment variable if needed to the 'pfbridge' to
-    access:
+  * Set the 'pfbridge' environment variable (if needed):
 
     export pfbridge=http://localhost:33333
+
+    (currently, \$pfbridge=$pfbridge)
 
   * Also, note that on startup, the 'pflink' production and test
     URLs can be specified in environment variables, e.g:
@@ -108,6 +111,58 @@ randtime_generate () {
 
 ###############################################################################
 #_____________________________________________________________________________#
+# V A U L T / c r e d e n t i a l l i n g                                     #
+#_____________________________________________________________________________#
+###############################################################################
+# vaultKey and credentialling                                                 #
+###############################################################################
+#
+
+vaultKey_set() {
+  CMD=$(echo curl -s -X 'PUT'                         \
+  "$pfbridge/api/v1/vaultKey/?key=$1"                 \
+  -H "accept: application/json")
+  if (( ${#VERBOSE} )) ; then echo $CMD ; fi
+  echo "$CMD" | sh | jq
+}
+
+vault_check() {
+  CMD=$(echo curl -s -X 'GET'                         \
+  "$pfbridge/api/v1/vaultKey/"                        \
+  -H "accept: application/json")
+  if (( ${#VERBOSE} )) ; then echo $CMD ; fi
+  echo "$CMD" | sh | jq
+}
+
+credentials_get() {
+  SERVICE=$1
+  KEY=$2
+  CMD=$(echo curl -s -X 'GET'                             \
+  "$pfbridge/api/v1/credentials/$SERVICE/?vaultKey=$KEY"  \
+  -H "accept: application/json")
+  if (( ${#VERBOSE} )) ; then echo $CMD ; fi
+  echo "$CMD" | sh | jq
+}
+
+credentials_set() {
+  SERVICE=$1
+  KEY=$2
+  USER=$3
+  PASSWORD=$4
+  CMD=$(echo curl -s -X 'POST'                            \
+  "$pfbridge/api/v1/credentials/$SERVICE/?vaultKey=$KEY"  \
+  -H "accept: application/json"                           \
+  -H \"Content-Type: application/json\"                   \
+  -d ''\''{
+     "username": "'$USER'",
+     "password": "'$PASSWORD'"
+  }'\''')
+  if (( ${#VERBOSE} )) ; then echo $CMD ; fi
+  echo "$CMD" | sh | jq
+}
+
+###############################################################################
+#_____________________________________________________________________________#
 # G E T / P U T  pflink URLs                                                  #
 #_____________________________________________________________________________#
 ###############################################################################
@@ -145,8 +200,14 @@ prodURL_set() {
 }
 
 analysis_get() {
+  KEY=$1
+  if (( ${KEY} )) ; then
+    QUERY="?vaultKey=$KEY"
+  else
+    QUERY=""
+  fi
   CMD=$(echo curl -s -X 'GET'                         \
-  \"$pfbridge/api/v1/analysis/\"                      \
+  \"$pfbridge/api/v1/analysis/$QUERY\"                \
   -H \"accept: application/json\"                     \
   )
   if (( ${#VERBOSE} )) ; then echo $CMD ; fi
