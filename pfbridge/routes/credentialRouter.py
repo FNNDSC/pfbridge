@@ -207,7 +207,7 @@ def orthanclogin_get(
     d_status = credentialAccess_check(vaultKey)
     if not d_status.status: return d_status
 
-    d_credentials.username  = settings.credentialsCUBE.usernameCUBE
-    d_credentials.password  = settings.credentialsCUBE.passwordCUBE
+    d_credentials.username  = settings.credentialsOrthanc.usernameOrthanc
+    d_credentials.password  = settings.credentialsOrthanc.passwordOrthanc
     return d_credentials
 

@@ -87,7 +87,7 @@ def prodURL_update(URL:str) -> relayModel.pflinkURLs:
     return update
 
 @router.get(
-    '/pflink/',
+    '/pflink/URLs/',
     response_model  = relayModel.pflinkURLs,
     summary         = '''
     GET the internal pflink URLs.
@@ -100,7 +100,7 @@ def urls_retFromModel() -> relayModel.pflinkURLs:
 
     Simply return the URLs to the `pfbridge` with which this
     `pflink` will communicate. These URLs are typically defined
-    in the environment at `pfbridge`, but can also be set with
+    in the environment of `pfbridge`, but can also be set with
     an appropriate PUT. Note that runtime changes to these URLs
     are _NOT_ preserved on restart!
 
@@ -112,6 +112,95 @@ def urls_retFromModel() -> relayModel.pflinkURLs:
     current.productionURL           = settings.pflink.prodURL
     current.testingURL              = settings.pflink.testURL
     return current
+
+@router.get(
+    '/service/URLs/',
+    response_model  = relayModel.serviceURLs,
+    summary         = '''
+    GET the URLs for services such as CUBE and orthanc.
+    '''
+)
+def serviceUrls_retFromModel() -> relayModel.serviceURLs:
+    """
+    Description
+    -----------
+
+    Simply return the serviceURLs, i.e. `CUBE` and `orthanc` URLs.
+
+    These URLs are typically defined in the `pfbridge` environment,
+    but can also be set with an appropriate PUT. Note that runtime
+    changes to these URLs are _NOT_ preserved on restart!
+
+    Returns
+    -------
+    * `relayModel.serviceURLs`: The model URLs
+    """
+    current:relayModel.serviceURLs  = relayModel.serviceURLs()
+    current.urlCUBE                 = settings.serviceURLs.urlCUBE
+    current.urlOrthanc              = settings.serviceURLs.urlOrthanc
+    return current
+
+@router.put(
+    '/service/URL/CUBE/',
+    response_model  = relayModel.serviceURLs,
+    summary         = '''
+    PUT a new value for the CUBE service URL.
+    '''
+)
+def urlCUBE_update(URL:str) -> relayModel.serviceURLs:
+    """
+    Description
+    -----------
+
+    Update the internal CUBE URL endpoint.
+
+    Note that any updates PUT here will *NOT* persist across restarts
+    of `pfbridge` -- on restart these will revert to startup/environement
+    settings.
+
+    Args:
+    -----
+    * `URL` (str): A URL.
+
+    Returns:
+    --------
+    * `relayModel.serviceURLs`: the updated set of service URLs
+    """
+    settings.serviceURLs.urlCUBE    = URL
+    update:relayModel.serviceURLs   = relayModel.serviceURLs()
+    update.urlCUBE                  = URL
+    return update
+
+@router.put(
+    '/service/URL/Orthanc/',
+    response_model  = relayModel.serviceURLs,
+    summary         = '''
+    PUT a new value for the Orthanc service URL.
+    '''
+)
+def urlOrthanc_update(URL:str) -> relayModel.serviceURLs:
+    """
+    Description
+    -----------
+
+    Update the internal Orthanc URL endpoint.
+
+    Note that any updates PUT here will *NOT* persist across restarts
+    of `pfbridge` -- on restart these will revert to startup/environement
+    settings.
+
+    Args:
+    -----
+    * `URL` (str): A URL.
+
+    Returns:
+    --------
+    * `relayModel.serviceURLs`: the updated set of service URLs
+    """
+    settings.serviceURLs.urlOrthanc = URL
+    update:relayModel.serviceURLs   = relayModel.serviceURLs()
+    update.urlOrthanc               = URL
+    return update
 
 @router.put(
     '/analysis/',
@@ -169,7 +258,7 @@ def analysis_update(
     GET the internal Analysis settings.
     '''
 )
-def analysis_values(vaultKey:str = "") -> settings.DylldAnalysis:
+def analysisValues_get(vaultKey:str = "") -> settings.DylldAnalysis:
     """
     Description
     -----------
@@ -182,29 +271,14 @@ def analysis_values(vaultKey:str = "") -> settings.DylldAnalysis:
     -------
     * `settings.Analysis`: The current Analysis settings
     """
+    values:settings.DylldAnalysis   = settings.analysis
     if vaultKey:
         d_vaultAccess:credentialModel.credentialsStatus = credentialModel.credentialsStatus()
         d_vaultAccess = credentialRouter.credentialAccess_check(vaultKey)
         if d_vaultAccess.status:
-            decode:pftag.Pftag  = pftag.Pftag({})
-            addDict:bool = decode.lookupDict_add(
-                [
-                    {
-                        'CUBE':    {
-                            'usernameCUBE': settings.credentialsCUBE.usernameCUBE,
-                            'passwordCUBE': settings.credentialsCUBE.passwordCUBE
-                        },
-                        'orthanc':    {
-                            'usernameOrthanc': settings.credentialsOrthanc.usernameOrthanc,
-                            'passwordOrthanc': settings.credentialsOrthanc.passwordOrthanc
-                        }
-                    }
-                ]
-            )
-            d_decode:dict = decode(settings.analysis.pluginArgs)
-            if d_decode['status']:
-                settings.analysis.pluginArgs    = d_decode['result']
-    return settings.analysis
+            settings.analysis_decode()
+            values = settings.analysisDecoded
+    return values
 
 @router.post(
     '/analyze/',

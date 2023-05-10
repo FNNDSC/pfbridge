@@ -5,14 +5,14 @@ str_description = """
     route handlers.
 """
 
-from    fastapi                 import FastAPI
+from    fastapi                 import FastAPI, APIRouter
 from    fastapi.middleware.cors import CORSMiddleware
 from    base.router             import helloRouter_create
 
 from    routes.relayRouter      import router   as relay_router
 from    routes.credentialRouter import router   as credential_router
 from    os                      import path
-
+from    config                  import settings
 import  pudb
 
 with open(path.join(path.dirname(path.abspath(__file__)), 'ABOUT')) as f:
@@ -49,7 +49,11 @@ tags_metadata:list = [
             is deployed.
             """
     }
-    ]
+]
+
+# On startup, check if a vaultKey has been set by the environment,
+# and if so, check/lock the vault.
+settings.vaultCheckLock(settings.vault)
 
 app = FastAPI(
     title           = 'pfbridge',
@@ -67,7 +71,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-hello_router = helloRouter_create(
+hello_router:APIRouter = helloRouter_create(
     name            = 'pfbridge_hello',
     version         = str_version,
     about           = str_about

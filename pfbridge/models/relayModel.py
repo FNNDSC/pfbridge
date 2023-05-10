@@ -97,6 +97,10 @@ class pflinkURLs(BaseModel):
     productionURL:str               = settings.pflink.prodURL
     testingURL:str                  = settings.pflink.testURL
 
+class serviceURLs(BaseModel):
+    urlCUBE:str                     = settings.serviceURLs.urlCUBE
+    urlOrthanc:str                  = settings.serviceURLs.urlOrthanc
+
 class pflinkResponseSchema(BaseModel):
     """
     The Workflow status response model. This is the return from pflink.
