@@ -23,7 +23,7 @@ from    pudb.remote         import set_trace
 from    config              import settings
 import  httpx
 
-from    lib                 import map
+from    lib                 import map, pflinkclient
 
 import  sys
 from    loguru              import logger
@@ -129,16 +129,45 @@ async def relayAndEchoBack(
     logToStdout("Transmitting", json.loads(toPflink.json()))
     URL:str                     = settings.pflink.testURL if test else settings.pflink.prodURL
     toClient:relayModel.clientResponseSchema    = relayModel.clientResponseSchema()
-    async with httpx.AsyncClient() as client:
-        try:
-            response: httpx.Response = await client.post(
-                    URL,
-                    data = toPflink.json()
-            )
-            logToStdout("Reply", response.json())
-            toClient:relayModel.clientResponseSchema = boundary.fromPflink_transform(response)
-            logToStdout("Return", json.loads(toClient.json()))
-        except Exception as e:
-            toClient:relayModel.clientResponseSchema = commsFailed_handle(URL, e)
-        return toClient
+    try:
+        toClient:relayModel.clientResponseSchema    = await pflinkPost(URL, toPflink.json(), boundary)
+    except pflinkclient.PflinkRequestInvalidTokenException:
+        logToStdout(f"Auth token has expired while POSTing workflow request to {settings.pflink.prodURL}",{})
+        await refreshPflinkAuthToken()
+        toClient:relayModel.clientResponseSchema    = await pflinkPost(URL, toPflink.json(), boundary)
+    except Exception as e:
+        toClient:relayModel.clientResponseSchema = commsFailed_handle(URL, e)
+    return toClient
+
+async def refreshPflinkAuthToken():
+    """
+    Get a new auth token from a pflink service and update the Base settings.
+    """
+    token = await pflinkclient.PflinkClient.get_auth_token(
+        settings.pflinkAuth.pflink_auth_url,
+        settings.pflinkAuth.pflink_username,
+        settings.pflinkAuth.pflink_password
+    )
+    settings.pflinkAuth.token = token
+
+async def pflinkPost(
+        URL: str,
+        data: str,
+        boundary: map.Map
+) -> relayModel.clientResponseSchema:
+    """
+    Make a POST request to pflink at a given service API endpoint
+    Args:
+        url: Service API endpoint of pflink
+        data: the request payload
+
+    Returns:
+       dict: the reponse from the remote pflink server
+    """
+    pflinkClient = pflinkclient.PflinkClient(URL, settings.pflinkAuth.token)
+    response: httpx.Response = await pflinkClient.post(data=data)
+    logToStdout("Reply", response.json())
+    toClient: relayModel.clientResponseSchema = boundary.fromPflink_transform(response)
+    logToStdout("Return", json.loads(toClient.json()))
+    return toClient
 

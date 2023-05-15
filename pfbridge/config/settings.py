@@ -16,6 +16,13 @@ class DylldAnalysis(Pflink):
     clinicalUser:str        = '%usernameCUBE'
     feedName:str            = 'dylld-%SeriesInstanceUID'
 
+class PflinkAuth(Pflink):
+    pflink_auth_url:str = "http://havana.tch.harvard.edu:8050/api/v1/auth-token"
+    pflink_username:str = "pflink"
+    pflink_password:str = "pflink1234"
+    token:str           = "" # will be generated while making POST request to pflink
+
+
 class ServiceURLs(BaseSettings):
     urlCUBE:str             = "http://localhost:8000/api/v1/"
     urlOrthanc:str          = "http://localhost:8888"
@@ -69,3 +76,4 @@ vault               = Vault()
 credentialsCUBE     = CredentialsCUBE()
 credentialsOrthanc  = CredentialsOrthanc()
 serviceURLs         = ServiceURLs()
+pflinkAuth          = PflinkAuth()
