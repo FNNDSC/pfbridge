@@ -27,6 +27,8 @@ class Client(object):
                 )
             except Exception as e:
                 raise PflinkRequestException(f"Error occurred while connecting to {self.url}: {str(e)}")
+            if response.status_code == 403:
+                raise PflinkRequestInvalidTokenException(f'Invalid auth token: {self.auth_token}')
             return response
 
     @staticmethod
@@ -46,10 +48,10 @@ class Client(object):
                     pflink_auth_url,
                     data={'username': pflink_user, 'password': pflink_password}
                 )
-                if not response.json().get('access_token'):
-                    raise Exception(f"Error occurred while creating new token from {pflink_auth_url}")
             except Exception as e:
                 raise PflinkRequestException(f"Error occurred while getting token from {pflink_auth_url}: {str(e)}")
+            if not response.json().get('access_token'):
+                raise Exception(f"Could not create token from URL: {pflink_auth_url}")
             return response.json().get('access_token')
 
 

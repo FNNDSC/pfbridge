@@ -20,7 +20,7 @@ class PflinkAuth(Pflink):
     pflink_auth_url:str = "http://localhost:8050/api/v1/auth-token"
     pflink_username:str = "pflink"
     pflink_password:str = "pflink1234"
-    token:str           = "" # will be generated while making POST request to pflink
+    token:str           = "invalid" # will be generated while making POST request to pflink
 
 
 class ServiceURLs(BaseSettings):
