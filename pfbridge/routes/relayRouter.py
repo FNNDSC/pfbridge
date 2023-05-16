@@ -53,6 +53,7 @@ def testURL_update(URL:str) -> relayModel.pflinkURLs:
     update:relayModel.pflinkURLs    = relayModel.pflinkURLs()
     update.productionURL            = settings.pflink.prodURL
     update.testingURL               = settings.pflink.testURL
+    update.authURL                  = settings.pflinkAuth.pflink_auth_url
     return update
 
 @router.put(
@@ -84,6 +85,39 @@ def prodURL_update(URL:str) -> relayModel.pflinkURLs:
     update:relayModel.pflinkURLs    = relayModel.pflinkURLs()
     update.productionURL            = settings.pflink.prodURL
     update.testingURL               = settings.pflink.testURL
+    update.authURL                  = settings.pflinkAuth.pflink_auth_url
+    return update
+
+@router.put(
+    '/pflink/authURL/',
+    response_model  = relayModel.pflinkURLs,
+    summary         = '''
+    PUT a new value for the pflink auth URL endpoint.
+    '''
+)
+def authURL_update(URL:str) -> relayModel.pflinkURLs:
+    """
+    Description
+    -----------
+
+    Update the internal *auth token* URL endpoint of the `pflink` controller.
+    Note that any updates PUT here will *NOT* persist across restarts
+    of `pfbridge` -- on restart these will revert to startup/environement
+    settings.
+
+    Args:
+    -----
+    * `URL` (str): A URL.
+
+    Returns:
+    --------
+    * `relayModel.pflinkURLs`: the updated set of pflinks
+    """
+    settings.pflinkAuth.pflink_auth_url         = URL
+    update:relayModel.pflinkURLs                = relayModel.pflinkURLs()
+    update.productionURL                        = settings.pflink.prodURL
+    update.testingURL                           = settings.pflink.testURL
+    update.authURL                              = settings.pflinkAuth.pflink_auth_url
     return update
 
 @router.get(
@@ -111,6 +145,7 @@ def urls_retFromModel() -> relayModel.pflinkURLs:
     current:relayModel.pflinkURLs   = relayModel.pflinkURLs()
     current.productionURL           = settings.pflink.prodURL
     current.testingURL              = settings.pflink.testURL
+    current.authURL                 = settings.pflinkAuth.pflink_auth_url
     return current
 
 @router.get(

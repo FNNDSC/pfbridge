@@ -1,6 +1,6 @@
 import httpx
 
-class PflinkClient(object):
+class Client(object):
     """
     A `pflink` client
     """
@@ -16,23 +16,17 @@ class PflinkClient(object):
 
     async def post(self, data: dict):
         """
-
-        Args:
-            data:
-
-        Returns:
-
         """
         headers = {'Authorization': 'Bearer ' + self.auth_token}
         async with httpx.AsyncClient() as client:
             try:
                 response: httpx.Response = await client.post(
                     self.url,
-                    data = data,
-                    headers = headers
+                    data=data,
+                    headers=headers
                 )
             except Exception as e:
-                raise Exception(str(e))
+                raise PflinkRequestException(f"Error occurred while connecting to {self.url}: {str(e)}")
             return response
 
     @staticmethod
@@ -40,25 +34,24 @@ class PflinkClient(object):
         """
         Make a POST request to obtain an auth token.
         Args:
-            pflink_auth_url:
-            pflink_user:
-            pflink_password:
+            pflink_auth_url: API endpoint of `pflink` to get new auth token
+            pflink_user: Authorized pflink username
+            pflink_password: Authorized pflink password
 
-        Returns:
-
+        Returns: A new authentication token
         """
-        print("Generating tokens")
         async with httpx.AsyncClient() as client:
             try:
                 response: httpx.Response = await client.post(
                     pflink_auth_url,
                     data={'username': pflink_user, 'password': pflink_password}
                 )
+                if not response.json().get('access_token'):
+                    raise Exception(f"Error occurred while creating new token from {pflink_auth_url}")
             except Exception as e:
-                print(str(e))
-                raise PflinkRequestException(str(e))
-            print(response)
+                raise PflinkRequestException(f"Error occurred while getting token from {pflink_auth_url}: {str(e)}")
             return response.json().get('access_token')
+
 
 class PflinkRequestException(Exception):
     pass

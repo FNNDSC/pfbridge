@@ -3,7 +3,6 @@ pfstate~=3.0.2
 pudb
 webob
 pynetdicom
-requests
 
 pftag
 

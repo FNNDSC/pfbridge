@@ -17,7 +17,7 @@ class DylldAnalysis(Pflink):
     feedName:str            = 'dylld-%SeriesInstanceUID'
 
 class PflinkAuth(Pflink):
-    pflink_auth_url:str = "http://192.168.0.14:8050/api/v1/auth-token"
+    pflink_auth_url:str = "http://localhost:8050/api/v1/auth-token"
     pflink_username:str = "pflink"
     pflink_password:str = "pflink1234"
     token:str           = "" # will be generated while making POST request to pflink
