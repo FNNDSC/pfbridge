@@ -134,7 +134,7 @@ async def relayAndEchoBack(
     except pflinkclient.PflinkRequestInvalidTokenException:
         logToStdout(f"Auth token has expired while POSTing workflow request to {settings.pflink.prodURL}",{})
         await refreshPflinkAuthToken()
-        toClient:relayModel.clientResponseSchema    = await pflinkPost(URL, toPflink.json(), boundary)
+        toClient: relayModel.clientResponseSchema = await pflinkPost(URL, toPflink.json(), boundary)
     except Exception as e:
         toClient:relayModel.clientResponseSchema = commsFailed_handle(URL, e)
     return toClient
@@ -143,12 +143,18 @@ async def refreshPflinkAuthToken():
     """
     Get a new auth token from a pflink service and update the Base settings.
     """
-    token = await pflinkclient.PflinkClient.get_auth_token(
-        settings.pflinkAuth.pflink_auth_url,
-        settings.pflinkAuth.pflink_username,
-        settings.pflinkAuth.pflink_password
-    )
-    settings.pflinkAuth.token = token
+    logToStdout("Requesting new tokens", {})
+    try:
+        token = await pflinkclient.PflinkClient.get_auth_token(
+            settings.pflinkAuth.pflink_auth_url,
+            settings.pflinkAuth.pflink_username,
+            settings.pflinkAuth.pflink_password
+            )
+
+        settings.pflinkAuth.token = token
+        logToStdout(f"Generated token is {token}", {})
+    except Exception as e:
+        logToStdout(str(e),{})
 
 async def pflinkPost(
         URL: str,

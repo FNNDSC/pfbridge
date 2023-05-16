@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  pfbridge:
+    image: local/pfbridge
+    container_name: pfbridge
+    environment:
+      MAX_WORKERS: 1
+    ports:
+      - "33333:33333"
+    networks:
+      local:
+      pfbridge:
+      
+networks:
+  pfbridge:
+  local:

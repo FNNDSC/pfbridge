@@ -47,6 +47,7 @@ class PflinkClient(object):
         Returns:
 
         """
+        print("Generating tokens")
         async with httpx.AsyncClient() as client:
             try:
                 response: httpx.Response = await client.post(
@@ -54,7 +55,9 @@ class PflinkClient(object):
                     data={'username': pflink_user, 'password': pflink_password}
                 )
             except Exception as e:
+                print(str(e))
                 raise PflinkRequestException(str(e))
+            print(response)
             return response.json().get('access_token')
 
 class PflinkRequestException(Exception):
