@@ -96,6 +96,7 @@ class pflinkError(BaseModel):
 class pflinkURLs(BaseModel):
     productionURL:str               = settings.pflink.prodURL
     testingURL:str                  = settings.pflink.testURL
+    authURL:str                     = settings.pflinkAuth.pflink_auth_url
 
 class serviceURLs(BaseModel):
     urlCUBE:str                     = settings.serviceURLs.urlCUBE

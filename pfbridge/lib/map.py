@@ -55,8 +55,10 @@ class Map:
         pflinkPOST.cube_user_info.password   = settings.credentialsCUBE.passwordCUBE
         match payload.analyzeFunction:
             case 'dylld':
-                pflinkPOST.workflow_info.plugin_name   = settings.analysis.pluginName
-                pflinkPOST.workflow_info.plugin_params = settings.analysis.pluginArgs
+                pflinkPOST.workflow_info.plugin_name    = settings.analysis.pluginName
+                pflinkPOST.workflow_info.plugin_version = settings.analysis.pluginVersion
+                settings.analysis_decode()
+                pflinkPOST.workflow_info.plugin_params  = settings.analysisDecoded.pluginArgs
         return pflinkPOST
 
     def fromPflink_transform(self, payload:httpx.Response) -> relayModel.clientResponseSchema:
