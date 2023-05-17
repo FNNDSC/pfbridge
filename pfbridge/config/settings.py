@@ -13,7 +13,6 @@ class DylldAnalysis(Pflink):
     pluginName:str          = 'pl-dylld'
     pluginVersion:str       = '4.4.28'
     pluginArgs:str          = '--pattern **/*dcm --CUBEurl %urlCUBE --CUBEuser %usernameCUBE --CUBEpassword %passwordCUBE --orthancURL %urlOrthanc --orthancuser %usernameOrthanc --orthancpassword %passwordOrthanc'
-    clinicalUser:str        = '%usernameCUBE'
     feedName:str            = 'dylld-%SeriesInstanceUID'
 
 class PflinkAuth(Pflink):
@@ -64,10 +63,9 @@ def analysis_decode() -> None:
             }
         ]
     )
-    for field in ['pluginArgs', 'clinicalUser']:
-        d_decode:dict = decode(analysis.__getattribute__(field))
-        if d_decode['status']:
-            analysisDecoded.__setattr__(field, d_decode['result'])
+    d_decode:dict = decode(analysis.__getattribute__('pluginArgs'))
+    if d_decode['status']:
+        analysisDecoded.__setattr__('pluginArgs', d_decode['result'])
 
 pflink              = Pflink()
 analysis            = DylldAnalysis()

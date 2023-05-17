@@ -264,7 +264,6 @@ def analysis_update(
     * `analysisPluginName` -- the name of the plugin to run
     * `analysisPluginArgs` -- args to pass to the plugin
     * `analysisPluginVersion` -- the plugin version to run
-    * `clinicalUser` -- the name of the clinical user; this is the name within ChRIS.
     * `analysisFeedName`  -- the template feed name
 
     Returns
@@ -280,8 +279,6 @@ def analysis_update(
             settings.analysis.pluginArgs    = value
         case 'analysisPluginVersion':
             settings.analysis.pluginVersion = value
-        case 'clinicalUser':
-            settings.analysis.clinicalUser  = value
         case 'analysisFeedName':
             settings.analysis.feedName      = value
     return settings.analysis
