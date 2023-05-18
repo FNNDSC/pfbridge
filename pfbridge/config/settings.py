@@ -31,8 +31,8 @@ class Vault(BaseSettings):
     vaultKey:str            = ''
 
 class CredentialsCUBE(BaseSettings):
-    usernameCUBE:str        = ''
-    passwordCUBE:str        = ''
+    usernameCUBE:str        = 'chris'
+    passwordCUBE:str        = 'chris1234'
 
 class CredentialsOrthanc(BaseSettings):
     usernameOrthanc:str     = ''

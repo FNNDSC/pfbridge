@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   pfbridge:
@@ -6,12 +6,12 @@ services:
     container_name: pfbridge
     environment:
       MAX_WORKERS: 1
+      PFLINK_USERNAME: pflink
+      PFLINK_PASSWORD: pflink1234
     ports:
       - "33333:33333"
     networks:
       local:
-      pfbridge:
       
 networks:
-  pfbridge:
   local:
