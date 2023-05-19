@@ -21,6 +21,10 @@ class PflinkAuth(Pflink):
     pflink_password:str = "pflink1234"
     token:str           = "invalid" # will be generated while making POST request to pflink
 
+class Pfdcm(BaseSettings):
+    name:str            = "PFDCMLOCAL"
+    PACSname:str        = "orthanc"
+    CUBEandSwiftKey:str = "local"
 
 class ServiceURLs(BaseSettings):
     urlCUBE:str             = "http://localhost:8000/api/v1/"
@@ -75,3 +79,4 @@ credentialsCUBE     = CredentialsCUBE()
 credentialsOrthanc  = CredentialsOrthanc()
 serviceURLs         = ServiceURLs()
 pflinkAuth          = PflinkAuth()
+pfdcm               = Pfdcm()
