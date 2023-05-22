@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 SYNOPSIS="
-This is testing
+NAME
+    setup.sh
+SYNOPSIS
+    setup.sh [-h]                   \\
+             [-U <pfbridgeUrl>]     \\
+             [-P <pflinkUrl>]       \\
+             [-v <vaultKey>]        \\
+             [-u <cubeUsername>]    \\
+             [-p <cubePassword>]    \\
+             [-o <orthancUsername>] \\
+             [-r <orthancPassword>] \\
+DESC
+ARGS
+EXAMPLES
 "
 
 # =========================================================
@@ -40,9 +53,9 @@ while getopts "U:P:v:u:p:o:r:h" opt; do
 done
 
 #
-# ==========================================================
+# =========================================================
 # STEP 1: CURL request to update existing `pflink` test URL
-# ==========================================================
+# =========================================================
 curl -X 'PUT' \
   "$URL/pflink/testURL/?URL=$PFLINK_URL/testing" \
   -H 'accept: application/json' | jq
