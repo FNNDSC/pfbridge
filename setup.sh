@@ -2,6 +2,7 @@
 SYNOPSIS="
 NAME
     setup.sh
+
 SYNOPSIS
     setup.sh [-h]                   \\
              [-U <pfbridgeUrl>]     \\
@@ -12,8 +13,48 @@ SYNOPSIS
              [-o <orthancUsername>] \\
              [-r <orthancPassword>] \\
 DESC
+    setup.sh is a helper script to override various Base
+    Settings inside pfbridge such as service endpoints of
+    pflink and analysis related settings such as username
+    and password of CUBE and orthanc
+
 ARGS
+    [-h]
+    If specified, print this synapsis text of setup.sh.
+
+    [-U <pfbridgeUrl>]
+    If specified, uses this url (complete service address)
+    as service address to submit curl requests to pfbridge.
+
+    [-P <pflinkUrl>]
+    If specified, use this url (complete service address)
+    to override existing pflink urls in the base settings.
+
+    [-v <vaultKey>]
+    If specified, use this combination as a vault key
+    to get/set various analysis related settings.
+
+    [-u <cubeUsername>]
+    If specified, use this string to set CUBE username.
+
+    [-p <cubePassword>]
+    If specified, use this string to set CUBE password.
+
+    [-o <orthancUsername>]
+    If specified, use this string to set orthanc username.
+
+    [-r <orthancPassword>]
+    If specified, use this string to set orthanc password.
+
 EXAMPLES
+    $ ./setup.sh -U http://localhost:33333/api/v1 \\
+                 -P http://localhost:8050/api/v1  \\
+                 -v 1234                          \\
+                 -u chris                         \\
+                 -p chris1234                     \\
+                 -o orthanc                       \\
+                 -r orthanc                       
+
 "
 
 # =========================================================
