@@ -80,3 +80,4 @@ credentialsOrthanc  = CredentialsOrthanc()
 serviceURLs         = ServiceURLs()
 pflinkAuth          = PflinkAuth()
 pfdcm               = Pfdcm()
+

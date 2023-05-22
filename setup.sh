@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+SYNOPSIS="
+This is testing
+"
+
 # =========================================================
 # STEP 0:  CONFIGURATION
 # =========================================================
@@ -12,32 +16,29 @@ PASSWORDCUBE='chris1234'
 USERNAMEORTHANC='orthanc'
 PASSWORDORTHANC='orthanc'
 
-while :; do
-    case $1 in
-        -h|-\?|-x|--help)
-            printf "%s" "This is a test"
-            exit 1 ;;
-        -U|--url)
-            URL=$2 ;;          
-        -P|--pflinkUrl)
-            PFLINK_URL=$2 ;;
-        -v|--vaultKey)
-            VAULTKEY=$2 ;;
-        -u|--cubeUsername)
-            USERNAMECUBE=$2 ;;
-        -p|--cubePassword)
-            PASSWORDCUBE=$2 ;;       
-        -o|--orthancUsername)
-            USERNAMEORTHANC=$2 ;;
-        -r|--orthancPassword)
-            PASSWORDORTHANC=$2 ;;
-        --) # End of all options
-            shift
-            break ;;
+while getopts "U:P:v:u:p:o:r:h" opt; do
+    case $opt in
+        h) printf "%s" "$SYNOPSIS"; exit 1                ;;
+
+        U) URL=$2                                         ;;
+
+        P) PFLINK_URL=$OPTARG                             ;;
+
+        v) VAULTKEY=$OPTARG                               ;;
+
+        u) USERNAMECUBE=$OPTARG                           ;;
+
+        p) PASSWORDCUBE=$OPTARG                           ;;
+
+        o) USERNAMEORTHANC=$OPTARG                        ;;
+
+        r) PASSWORDORTHANC=$OPTARG                        ;;
+
+        *) exit 0                                         ;;
+
     esac
-    shift
 done
-printf "%s" $PFDCM
+
 #
 # ==========================================================
 # STEP 1: CURL request to update existing `pflink` test URL
