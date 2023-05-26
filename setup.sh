@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# =========================================================
 SYNOPSIS="
 NAME
     setup.sh
@@ -25,26 +26,33 @@ ARGS
     [-U <pfbridgeUrl>]
     If specified, uses this url (complete service address)
     as service address to submit curl requests to pfbridge.
+    Default value is http://localhost:33333/api/v1.
 
     [-P <pflinkUrl>]
     If specified, use this url (complete service address)
     to override existing pflink urls in the base settings.
+    Default value is http://localhost:8050/api/v1.
 
     [-v <vaultKey>]
     If specified, use this combination as a vault key
     to get/set various analysis related settings.
+    Default value is 1234.
 
     [-u <cubeUsername>]
     If specified, use this string to set CUBE username.
+    Default value is 'chris'.
 
     [-p <cubePassword>]
     If specified, use this string to set CUBE password.
+    Default value is 'chris1234'.
 
     [-o <orthancUsername>]
     If specified, use this string to set orthanc username.
+    Default value is 'orthanc'.
 
     [-r <orthancPassword>]
     If specified, use this string to set orthanc password.
+    Default value is 'orthanc'.
 
 EXAMPLES
     $ ./setup.sh -U http://localhost:33333/api/v1 \\
