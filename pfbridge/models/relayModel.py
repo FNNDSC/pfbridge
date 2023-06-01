@@ -15,15 +15,14 @@ from    config              import settings
 
 class pacsService(BaseModel):
     """Name of the PACS service provider"""
-    provider:str                    = 'orthanc'
-
+    provider:str                    = settings.pfdcm.PACSname
 class pfdcmService(BaseModel):
     """Name of the PFDCM service provider -- relevant to ChRIS"""
-    provider:str                    = 'PFDCMLOCAL'
+    provider:str                    = settings.pfdcm.name
 
 class CUBEandSwiftKey(BaseModel):
     """Lookup key for CUBE and swift information -- relevant to ChRIS"""
-    key:str                         = 'local'
+    key:str                         = settings.pfdcm.CUBEandSwiftKey
 
 class db(BaseModel):
     """Path of the ChRIS managed PACS filesystem database"""
@@ -96,6 +95,7 @@ class pflinkError(BaseModel):
 class pflinkURLs(BaseModel):
     productionURL:str               = settings.pflink.prodURL
     testingURL:str                  = settings.pflink.testURL
+    authURL:str                     = settings.pflinkAuth.pflink_auth_url
 
 class serviceURLs(BaseModel):
     urlCUBE:str                     = settings.serviceURLs.urlCUBE

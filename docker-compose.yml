@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  pfbridge:
+    image: local/pfbridge
+    container_name: pfbridge
+    environment:
+      MAX_WORKERS: 1
+      PFLINK_USERNAME: pflink
+      PFLINK_PASSWORD: pflink1234
+      NAME: PFDCMLOCAL
+      PACSNAME: PACSDCM
+      CUBEANDSWIFTKEY: local
+    ports:
+      - "33333:33333"
+    networks:
+      local:
+      
+networks:
+  local:

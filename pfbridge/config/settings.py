@@ -13,8 +13,18 @@ class DylldAnalysis(Pflink):
     pluginName:str          = 'pl-dylld'
     pluginVersion:str       = '4.4.28'
     pluginArgs:str          = '--pattern **/*dcm --CUBEurl %urlCUBE --CUBEuser %usernameCUBE --CUBEpassword %passwordCUBE --orthancURL %urlOrthanc --orthancuser %usernameOrthanc --orthancpassword %passwordOrthanc'
-    clinicalUser:str        = '%usernameCUBE'
     feedName:str            = 'dylld-%SeriesInstanceUID'
+
+class PflinkAuth(Pflink):
+    pflink_auth_url:str = "http://localhost:8050/api/v1/auth-token"
+    pflink_username:str = "pflink"
+    pflink_password:str = "pflink1234"
+    token:str           = "invalid" # will be generated while making POST request to pflink
+
+class Pfdcm(BaseSettings):
+    name:str            = "PFDCMLOCAL"
+    PACSname:str        = "orthanc"
+    CUBEandSwiftKey:str = "local"
 
 class ServiceURLs(BaseSettings):
     urlCUBE:str             = "http://localhost:8000/api/v1/"
@@ -25,8 +35,8 @@ class Vault(BaseSettings):
     vaultKey:str            = ''
 
 class CredentialsCUBE(BaseSettings):
-    usernameCUBE:str        = ''
-    passwordCUBE:str        = ''
+    usernameCUBE:str        = 'chris'
+    passwordCUBE:str        = 'chris1234'
 
 class CredentialsOrthanc(BaseSettings):
     usernameOrthanc:str     = ''
@@ -57,10 +67,9 @@ def analysis_decode() -> None:
             }
         ]
     )
-    for field in ['pluginArgs', 'clinicalUser']:
-        d_decode:dict = decode(analysis.__getattribute__(field))
-        if d_decode['status']:
-            analysisDecoded.__setattr__(field, d_decode['result'])
+    d_decode:dict = decode(analysis.__getattribute__('pluginArgs'))
+    if d_decode['status']:
+        analysisDecoded.__setattr__('pluginArgs', d_decode['result'])
 
 pflink              = Pflink()
 analysis            = DylldAnalysis()
@@ -69,3 +78,6 @@ vault               = Vault()
 credentialsCUBE     = CredentialsCUBE()
 credentialsOrthanc  = CredentialsOrthanc()
 serviceURLs         = ServiceURLs()
+pflinkAuth          = PflinkAuth()
+pfdcm               = Pfdcm()
+
