@@ -24,8 +24,9 @@
 # In some envs, this MUST be an IP address!
 let-env pfbridge    = http://localhost:33333
 let-env prefix      = 'api/v1'
-# To access the API swagger documentation, point a brower at:
+# To access the API swagger documentation, point a browser at:
 let-env swaggerURL  = ":33333/docs"
+let-env VERBOSITY   = 0 | into int
 
 ###############################################################################
 #_____________________________________________________________________________#
@@ -145,7 +146,10 @@ def http_put [url:string query:string] {
 }
 
 def http_post [url:string body:record] {
-  http post -t application/json $"($env.pfbridge)/($env.prefix)/($url)" ($body)
+  let CMD = $'http post -t application/json $"($env.pfbridge)/($env.prefix)/($url)" ($body)'
+  if ($env.VERBOSITY | into bool) { print $CMD }
+  nu -c $CMD
+  #http post -t application/json $"($env.pfbridge)/($env.prefix)/($url)" ($body)
 }
 
 ###############################################################################
@@ -242,13 +246,17 @@ def relay [StudyInstanceUID:string SeriesInstanceUID:string type:string = "test"
     "StudyInstanceUID": ($StudyInstanceUID),
     "SeriesInstanceUID": ($SeriesInstanceUID)
   }
+  let PAYLOAD = {
+    "imageMeta" :  $PACSDIRECTIVE,
+    "analyzeFunction" : "dylld"
+  }
   mut query = ""
   if ($type == 'test') {
     $query = "?test=true"
   } else {
     $query = ""
   }
-  http_post analyze/($query) ($PACSDIRECTIVE)
+  http_post analyze/($query) ($PAYLOAD)
 }
 
 #
