@@ -31,7 +31,9 @@ class Map:
             "registering to CUBE":       "Registering image to ChRIS",
             "feed created":              "Analysis created in ChRIS",
             "analyzing study":           "Analysis running in ChRIS",
-            "completed":                 "Results available in PACS"
+            "completed":                 "Results available in PACS",
+            "feed deleted from CUBE":    "Analysis deleted from ChRIS",
+            "duplicate workflow exists": "Duplicate workflows found"
         }
         for k, v in kwargs.items():
             if k == 'name'      : self.mapName  = v
