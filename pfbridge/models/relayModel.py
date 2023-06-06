@@ -75,7 +75,7 @@ class cubeUserModel(BaseModel):
     password:str                   = settings.credentialsCUBE.passwordCUBE
 
 class pflinkInput(BaseModel):
-    ignore_duplicate                = settings.pflink.ignore_duplicate
+    ignore_duplicate:bool           = settings.pflink.ignore_duplicate
     pfdcm_info:pfdcmInfo            = pfdcmInfo()
     PACS_directive:PACSqueryCore    = PACSqueryCore()
     workflow_info:analysisModel     = analysisModel()
