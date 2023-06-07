@@ -125,7 +125,7 @@ def authURL_update(URL:str) -> relayModel.pflinkURLs:
     '/pflink/ignoreDuplicate/',
     response_model  = "",
     summary         = '''
-    PUT a new value for the pflink testing URL endpoint.
+    PUT a new value to turn on/off `pflink` ignore duplicate feature.
     '''
 )
 def ignoreDuplicate_update(flag:bool):
@@ -133,18 +133,18 @@ def ignoreDuplicate_update(flag:bool):
     Description
     -----------
 
-    Update the internal *testing* URL endpoint of the `pflink` controller.
+    Update the internal flag that controls the "ignore duplicate" of `pflink`
     Note that any updates PUT here will *NOT* persist across restarts
     of `pfbridge` -- on restart these will revert to startup/environement
     settings.
 
     Args:
     -----
-    * `URL` (str): A URL.
+    * `flag` (bool): A boolean flag.
 
     Returns:
     --------
-    * `relayModel.pflinkURLs`: the updated set of pflinks
+    * A confirmation response reflecting the update made by the PUT request.
     """
     settings.pflink.ignore_duplicate = flag
     return {"Ignore duplicate flag set to": flag}

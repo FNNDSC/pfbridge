@@ -71,7 +71,7 @@ EXAMPLES
 #
 #
 URL='http://localhost:33333/api/v1'
-PFLINK_URL='http://192.168.0.14:8050/api/v1'
+PFLINK_URL='http://localhost:8050/api/v1'
 VAULTKEY='1234'
 USERNAMECUBE='chris'
 PASSWORDCUBE='chris1234'
