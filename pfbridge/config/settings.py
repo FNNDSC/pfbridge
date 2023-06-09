@@ -68,9 +68,10 @@ def analysis_decode() -> None:
             }
         ]
     )
+    print(analysis)
     d_decode:dict = decode(analysis.__getattribute__('pluginArgs'))
-    if d_decode['status']:
-        analysisDecoded.__setattr__('pluginArgs', d_decode['result'])
+    analysisDecoded.__setattr__('pluginArgs', d_decode['result'])
+
 
 pflink              = Pflink()
 analysis            = DylldAnalysis()
