@@ -7,6 +7,7 @@ from    pftag       import pftag
 class Pflink(BaseSettings):
     prodURL:str             = 'http://localhost:8050/api/v1/workflow'
     testURL:str             = 'http://localhost:8050/api/v1/testing'
+    ignore_duplicate:bool   = True
 
 class DylldAnalysis(Pflink):
     pipelineName:str        = ''
@@ -19,7 +20,7 @@ class PflinkAuth(Pflink):
     pflink_auth_url:str = "http://localhost:8050/api/v1/auth-token"
     pflink_username:str = "pflink"
     pflink_password:str = "pflink1234"
-    token:str           = "invalid" # will be generated while making POST request to pflink
+    token:str           = "invalid"  # will be generated while making POST request to pflink
 
 class Pfdcm(BaseSettings):
     name:str            = "PFDCMLOCAL"
@@ -67,9 +68,10 @@ def analysis_decode() -> None:
             }
         ]
     )
+    print(analysis)
     d_decode:dict = decode(analysis.__getattribute__('pluginArgs'))
-    if d_decode['status']:
-        analysisDecoded.__setattr__('pluginArgs', d_decode['result'])
+    analysisDecoded.__setattr__('pluginArgs', d_decode['result'])
+
 
 pflink              = Pflink()
 analysis            = DylldAnalysis()

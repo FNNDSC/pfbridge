@@ -31,7 +31,9 @@ class Map:
             "registering to CUBE":       "Registering image to ChRIS",
             "feed created":              "Analysis created in ChRIS",
             "analyzing study":           "Analysis running in ChRIS",
-            "completed":                 "Results available in PACS"
+            "completed":                 "Results available in PACS",
+            "feed deleted from CUBE":    "Analysis deleted from ChRIS",
+            "duplicate workflow exists": "Duplicate workflows found"
         }
         for k, v in kwargs.items():
             if k == 'name'      : self.mapName  = v
@@ -49,6 +51,7 @@ class Map:
             relayModel.pflinkInput: a payload suitable for relaying on to `pflink`.
         """
         pflinkPOST:relayModel.pflinkInput    = relayModel.pflinkInput()
+        pflinkPOST.ignore_duplicate          = settings.pflink.ignore_duplicate
         pflinkPOST.PACS_directive            = payload.imageMeta
         pflinkPOST.workflow_info.feed_name   = payload.analyzeFunction
         pflinkPOST.cube_user_info.username   = settings.credentialsCUBE.usernameCUBE
@@ -85,6 +88,6 @@ class Map:
         if not fromPflink['status']:
             toClinicalService.State     = "Workflow failed. Please check any error messages."
         toClinicalService.Status        = fromPflink['status']
-        toClinicalService.Progress      = fromPflink['state_progress']
+        toClinicalService.Progress      = fromPflink['workflow_progress']
         toClinicalService.ErrorWorkflow = fromPflink['error']
         return toClinicalService

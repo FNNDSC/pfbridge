@@ -75,6 +75,7 @@ class cubeUserModel(BaseModel):
     password:str                   = settings.credentialsCUBE.passwordCUBE
 
 class pflinkInput(BaseModel):
+    ignore_duplicate:bool           = settings.pflink.ignore_duplicate
     pfdcm_info:pfdcmInfo            = pfdcmInfo()
     PACS_directive:PACSqueryCore    = PACSqueryCore()
     workflow_info:analysisModel     = analysisModel()
@@ -110,7 +111,10 @@ class pflinkResponseSchema(BaseModel):
     state_progress: str             = "0%"
     feed_id: str                    = ""
     feed_name: str                  = ""
+    message: str                    = ""
+    duplicates: list[dict]          = None
     error: str                      = ""
+    workflow_progress: str          = "0%"
 
 class clientResponseSchema(BaseModel):
     """
