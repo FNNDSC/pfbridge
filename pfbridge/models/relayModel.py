@@ -114,7 +114,7 @@ class pflinkResponseSchema(BaseModel):
     message: str                    = ""
     duplicates: list[dict]          = None
     error: str                      = ""
-    workflow_progress: str          = "0%"
+    workflow_progress_perc: int     = 0
 
 class clientResponseSchema(BaseModel):
     """
@@ -123,7 +123,7 @@ class clientResponseSchema(BaseModel):
     """
     Status:bool                     = False
     State:str                       = ''
-    Progress:str                    = ''
+    ProgressPerc:int                = 0
     ErrorWorkflow:str               = ''
     ModelViolation:Any              = None
     ErrorComms:pflinkError          = pflinkError()

@@ -58,6 +58,7 @@ class Map:
         pflinkPOST.cube_user_info.password   = settings.credentialsCUBE.passwordCUBE
         match payload.analyzeFunction:
             case 'dylld':
+                pflinkPOST.workflow_info.pipeline_name  = settings.analysis.pipelineName
                 pflinkPOST.workflow_info.plugin_name    = settings.analysis.pluginName
                 pflinkPOST.workflow_info.plugin_version = settings.analysis.pluginVersion
                 settings.analysis_decode()
@@ -88,6 +89,6 @@ class Map:
         if not fromPflink['status']:
             toClinicalService.State     = "Workflow failed. Please check any error messages."
         toClinicalService.Status        = fromPflink['status']
-        toClinicalService.Progress      = fromPflink['workflow_progress']
+        toClinicalService.ProgressPerc  = fromPflink['workflow_progress_perc']
         toClinicalService.ErrorWorkflow = fromPflink['error']
         return toClinicalService

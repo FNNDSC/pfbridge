@@ -68,7 +68,6 @@ def analysis_decode() -> None:
             }
         ]
     )
-    print(analysis)
     d_decode:dict = decode(analysis.__getattribute__('pluginArgs'))
     analysisDecoded.__setattr__('pluginArgs', d_decode['result'])
 
