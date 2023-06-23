@@ -68,8 +68,9 @@ def analysis_decode() -> None:
             }
         ]
     )
-    d_decode:dict = decode(analysis.__getattribute__('pluginArgs'))
-    analysisDecoded.__setattr__('pluginArgs', d_decode['result'])
+    for field in ["pluginArgs", "pipelineName", "pluginName", "feedName", "pluginVersion"]:
+        d_decode:dict = decode(analysis.__getattribute__(field))
+        analysisDecoded.__setattr__(field, d_decode["result"])
 
 
 pflink              = Pflink()

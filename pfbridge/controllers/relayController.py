@@ -97,7 +97,7 @@ def commsFailed_handle(URL:str, e:Exception) -> relayModel.clientResponseSchema:
     failedClient:relayModel.clientResponseSchema    = relayModel.clientResponseSchema()
     failedClient.Status         = False
     failedClient.State          = "Comms failure"
-    failedClient.Progress       = "n/a"
+    failedClient.ProgressPerc   = 0
     failedClient.ErrorWorkflow  = "n/a"
     errorResponse:relayModel.pflinkError            = relayModel.pflinkError()
     errorResponse.URL           = URL
