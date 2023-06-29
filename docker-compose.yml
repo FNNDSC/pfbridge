@@ -9,7 +9,7 @@ services:
       PFLINK_USERNAME: pflink
       PFLINK_PASSWORD: pflink1234
       NAME: PFDCMLOCAL
-      PACSNAME: PACSDCM
+      PACSNAME: orthanc
       CUBEANDSWIFTKEY: local
     ports:
       - "33333:33333"

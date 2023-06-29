@@ -41,9 +41,5 @@ RUN pip install https://github.com/msbrogli/rpudb/archive/master.zip
 RUN pip install tzlocal
 COPY ./pfbridge /app
 
-RUN apt update                              && \
-    apt-get install -y apt-transport-https  && \
-    apt -y install vim telnet netcat procps
-
 ENV PORT=33333
 EXPOSE ${PORT}

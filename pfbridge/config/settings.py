@@ -65,13 +65,17 @@ def analysis_decode() -> None:
                     'passwordOrthanc':  credentialsOrthanc.passwordOrthanc,
                     'urlOrthanc':       serviceURLs.urlOrthanc
                 }
+            },
+            {
+                'ignore': {
+                    'time': '%timestamp'
+                }
             }
         ]
     )
     for field in ["pluginArgs", "pipelineName", "pluginName", "feedName", "pluginVersion"]:
         d_decode:dict = decode(analysis.__getattribute__(field))
         analysisDecoded.__setattr__(field, d_decode["result"])
-
 
 pflink              = Pflink()
 analysis            = DylldAnalysis()
