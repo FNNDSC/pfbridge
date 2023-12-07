@@ -301,7 +301,7 @@ def analysis_update(
     * `settings.Analysis`: The current Analysis settings
     """
     if not settings.analyses.analyses.get(analysis_name):
-        settings.analyses.analyses[analysis_name] = settings.analysis
+        settings.analyses.analyses[analysis_name] = settings.DylldAnalysis()
     match key:
         case 'analysisPipelineName':
             settings.analyses.analyses[analysis_name].pipelineName  = value
@@ -322,7 +322,7 @@ def analysis_update(
     GET the internal Analysis settings.
     '''
 )
-def analysisValues_get(vaultKey:str = "") -> settings.DylldAnalysis:
+def analysisValues_get(vaultKey:str = "", analysis_name:str = "") -> settings.DylldAnalysis:
     """
     Description
     -----------
@@ -335,12 +335,12 @@ def analysisValues_get(vaultKey:str = "") -> settings.DylldAnalysis:
     -------
     * `settings.Analysis`: The current Analysis settings
     """
-    values:settings.DylldAnalysis   = settings.analysis
+    values:settings.DylldAnalysis   = settings.analyses.analyses[analysis_name]
     if vaultKey:
         d_vaultAccess:credentialModel.credentialsStatus = credentialModel.credentialsStatus()
         d_vaultAccess = credentialRouter.credentialAccess_check(vaultKey)
         if d_vaultAccess.status:
-            settings.analysis_decode()
+            settings.analysis_decode(analysis_name)
             values = settings.analysisDecoded
     return values
 
