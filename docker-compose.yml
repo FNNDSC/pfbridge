@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   pfbridge:
-    image: local/pfbridge
+    image: fnndsc/pfbridge:3.7.1
     container_name: pfbridge
     environment:
       MAX_WORKERS: 1

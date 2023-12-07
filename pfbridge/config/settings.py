@@ -9,11 +9,17 @@ class Pflink(BaseSettings):
     testURL:str             = 'http://localhost:8050/api/v1/testing'
     ignore_duplicate:bool   = True
 
+
+class Analyses(BaseSettings):
+    analyses: dict = {}
+
 class DylldAnalysis(Pflink):
     pipelineName:str        = ''
     pluginName:str          = 'pl-dylld'
     pluginVersion:str       = '4.4.28'
-    pluginArgs:str          = '--pattern **/*dcm --CUBEurl %urlCUBE --CUBEuser %usernameCUBE --CUBEpassword %passwordCUBE --orthancURL %urlOrthanc --orthancuser %usernameOrthanc --orthancpassword %passwordOrthanc'
+    pluginArgs:str          = '--pattern **/*dcm --CUBEurl %urlCUBE --CUBEuser \
+                              %usernameCUBE --CUBEpassword %passwordCUBE --orthancURL %urlOrthanc \
+                              --orthancuser %usernameOrthanc --orthancpassword %passwordOrthanc'
     feedName:str            = 'dylld-%SeriesInstanceUID'
 
 class PflinkAuth(Pflink):
@@ -86,4 +92,7 @@ credentialsOrthanc  = CredentialsOrthanc()
 serviceURLs         = ServiceURLs()
 pflinkAuth          = PflinkAuth()
 pfdcm               = Pfdcm()
+analyses            = Analyses()
+analyses.analyses["dylld"] = analysisDecoded
+
 

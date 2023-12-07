@@ -1,3 +1,6 @@
+"""
+This class contains useful methods to authenticate and re/generate auth tokens for `pflink`
+"""
 import httpx
 
 class Client(object):

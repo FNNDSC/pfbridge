@@ -274,6 +274,7 @@ def urlOrthanc_update(URL:str) -> relayModel.serviceURLs:
     '''
 )
 def analysis_update(
+    analysis_name = '',
     key     = '',
     value   = ''
 ) -> settings.DylldAnalysis:
@@ -299,18 +300,20 @@ def analysis_update(
     -------
     * `settings.Analysis`: The current Analysis settings
     """
+    if not settings.analyses.analyses.get(analysis_name):
+        settings.analyses.analyses[analysis_name] = settings.analysis
     match key:
         case 'analysisPipelineName':
-            settings.analysis.pipelineName  = value
+            settings.analyses.analyses[analysis_name].pipelineName  = value
         case 'analysisPluginName':
-            settings.analysis.pluginName    = value
+            settings.analyses.analyses[analysis_name].pluginName    = value
         case 'analysisPluginArgs':
-            settings.analysis.pluginArgs    = value
+            settings.analyses.analyses[analysis_name].pluginArgs    = value
         case 'analysisPluginVersion':
-            settings.analysis.pluginVersion = value
+            settings.analyses.analyses[analysis_name].pluginVersion = value
         case 'analysisFeedName':
-            settings.analysis.feedName      = value
-    return settings.analysis
+            settings.analyses.analyses[analysis_name].feedName      = value
+    return settings.analyses.analyses[analysis_name]
 
 @router.get(
     '/analysis/',
