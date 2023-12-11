@@ -335,7 +335,10 @@ def analysisValues_get(vaultKey:str = "", analysis_name:str = "") -> settings.Dy
     -------
     * `settings.Analysis`: The current Analysis settings
     """
-    values:settings.DylldAnalysis   = settings.analyses.analyses[analysis_name]
+    if settings.analyses.analyses.get(analysis_name):
+        values:settings.DylldAnalysis   = settings.analyses.analyses[analysis_name]
+    else:
+        values:settings.DylldAnalysis   = settings.analysis
     if vaultKey:
         d_vaultAccess:credentialModel.credentialsStatus = credentialModel.credentialsStatus()
         d_vaultAccess = credentialRouter.credentialAccess_check(vaultKey)

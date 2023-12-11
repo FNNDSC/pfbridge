@@ -15,12 +15,10 @@ class Analyses(BaseSettings):
 
 class DylldAnalysis(Pflink):
     pipelineName:str        = ''
-    pluginName:str          = 'pl-dylld'
-    pluginVersion:str       = '4.4.28'
-    pluginArgs:str          = '--pattern **/*dcm --CUBEurl %urlCUBE --CUBEuser \
-                              %usernameCUBE --CUBEpassword %passwordCUBE --orthancURL %urlOrthanc \
-                              --orthancuser %usernameOrthanc --orthancpassword %passwordOrthanc'
-    feedName:str            = 'dylld-%SeriesInstanceUID'
+    pluginName:str          = ''
+    pluginVersion:str       = ''
+    pluginArgs:str          = ''
+    feedName:str            = 'pfbridge-%SeriesInstanceUID'
 
 class PflinkAuth(Pflink):
     pflink_auth_url:str = "http://localhost:8050/api/v1/auth-token"
