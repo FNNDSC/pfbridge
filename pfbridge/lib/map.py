@@ -53,10 +53,10 @@ class Map:
         pflinkPOST:relayModel.pflinkInput    = relayModel.pflinkInput()
         pflinkPOST.ignore_duplicate          = settings.pflink.ignore_duplicate
         pflinkPOST.PACS_directive            = payload.imageMeta
-        pflinkPOST.workflow_info.feed_name   = settings.analysis.feedName
         pflinkPOST.cube_user_info.username   = settings.credentialsCUBE.usernameCUBE
         pflinkPOST.cube_user_info.password   = settings.credentialsCUBE.passwordCUBE
         if settings.analyses.analyses.get(payload.analyzeFunction):
+            pflinkPOST.workflow_info.feed_name      = settings.analyses.analyses[payload.analyzeFunction].feedName
             pflinkPOST.workflow_info.pipeline_name  = settings.analyses.analyses[payload.analyzeFunction].pipelineName
             pflinkPOST.workflow_info.plugin_name    = settings.analyses.analyses[payload.analyzeFunction].pluginName
             pflinkPOST.workflow_info.plugin_version = settings.analyses.analyses[payload.analyzeFunction].pluginVersion
