@@ -64,7 +64,7 @@ class PACSqueryCore(BaseModel):
     AcquisitionProtocolName             : str   = ""
 
 class analysisModel(BaseModel):
-    feed_name:str                  = settings.analysis.feedName
+    feed_name:str                  = ""
     plugin_name:str                = ""
     plugin_version:str             = ""
     plugin_params:str              = ""

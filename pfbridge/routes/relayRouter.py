@@ -274,6 +274,7 @@ def urlOrthanc_update(URL:str) -> relayModel.serviceURLs:
     '''
 )
 def analysis_update(
+    analysis_name = '',
     key     = '',
     value   = ''
 ) -> settings.DylldAnalysis:
@@ -299,18 +300,20 @@ def analysis_update(
     -------
     * `settings.Analysis`: The current Analysis settings
     """
+    if not settings.analyses.analyses.get(analysis_name):
+        settings.analyses.analyses[analysis_name] = settings.DylldAnalysis()
     match key:
         case 'analysisPipelineName':
-            settings.analysis.pipelineName  = value
+            settings.analyses.analyses[analysis_name].pipelineName  = value
         case 'analysisPluginName':
-            settings.analysis.pluginName    = value
+            settings.analyses.analyses[analysis_name].pluginName    = value
         case 'analysisPluginArgs':
-            settings.analysis.pluginArgs    = value
+            settings.analyses.analyses[analysis_name].pluginArgs    = value
         case 'analysisPluginVersion':
-            settings.analysis.pluginVersion = value
+            settings.analyses.analyses[analysis_name].pluginVersion = value
         case 'analysisFeedName':
-            settings.analysis.feedName      = value
-    return settings.analysis
+            settings.analyses.analyses[analysis_name].feedName      = value
+    return settings.analyses.analyses[analysis_name]
 
 @router.get(
     '/analysis/',
@@ -319,7 +322,7 @@ def analysis_update(
     GET the internal Analysis settings.
     '''
 )
-def analysisValues_get(vaultKey:str = "") -> settings.DylldAnalysis:
+def analysisValues_get(vaultKey:str = "", analysis_name:str = "") -> settings.DylldAnalysis:
     """
     Description
     -----------
@@ -332,12 +335,15 @@ def analysisValues_get(vaultKey:str = "") -> settings.DylldAnalysis:
     -------
     * `settings.Analysis`: The current Analysis settings
     """
-    values:settings.DylldAnalysis   = settings.analysis
+    if settings.analyses.analyses.get(analysis_name):
+        values:settings.DylldAnalysis   = settings.analyses.analyses[analysis_name]
+    else:
+        values:settings.DylldAnalysis   = settings.analysis
     if vaultKey:
         d_vaultAccess:credentialModel.credentialsStatus = credentialModel.credentialsStatus()
         d_vaultAccess = credentialRouter.credentialAccess_check(vaultKey)
         if d_vaultAccess.status:
-            settings.analysis_decode()
+            settings.analysis_decode(analysis_name)
             values = settings.analysisDecoded
     return values
 
