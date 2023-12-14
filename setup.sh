@@ -61,7 +61,10 @@ EXAMPLES
                  -u chris                         \\
                  -p chris1234                     \\
                  -o orthanc                       \\
-                 -r orthanc                       
+                 -r orthanc                       \\
+                 -n default                       \\
+                 -l pl-simpledsapp                \\
+                 -f default-%PatientID-%SeriesInstanceUID-%SeriesDescription
 
 "
 
@@ -77,8 +80,11 @@ USERNAMECUBE='chris'
 PASSWORDCUBE='chris1234'
 USERNAMEORTHANC='orthanc'
 PASSWORDORTHANC='orthanc'
+NAME='default'
+FEEDNAME="$NAME-%PatientID-%SeriesInstanceUID-%SeriesDescription"
+PLUGIN='pl-simpledsapp'
 
-while getopts "U:P:v:u:p:o:r:h" opt; do
+while getopts "U:P:v:u:p:o:r:n:l:f:h" opt; do
     case $opt in
         h) printf "%s" "$SYNOPSIS"; exit 1                ;;
 
@@ -96,6 +102,12 @@ while getopts "U:P:v:u:p:o:r:h" opt; do
 
         r) PASSWORDORTHANC=$OPTARG                        ;;
 
+        n) NAME=$OPTARG                                   ;;
+
+        l) PLUGIN=$OPTARG                                 ;;
+
+        f) FEEDNAME=$OPTARG                               ;;
+
         *) exit 0                                         ;;
 
     esac
@@ -105,35 +117,35 @@ done
 # =========================================================
 # STEP 1: CURL request to update existing `pflink` test URL
 # =========================================================
-curl -X 'PUT' \
+curl -s -X 'PUT' \
   "$URL/pflink/testURL/?URL=$PFLINK_URL/testing" \
   -H 'accept: application/json' | jq
 
 # =========================================================
 # STEP 2: CURL request to update existing `pflink` prod URL
 # =========================================================
-curl -X 'PUT' \
+curl -s -X 'PUT' \
   "$URL/pflink/prodURL/?URL=$PFLINK_URL/workflow" \
   -H 'accept: application/json' | jq
 
 # =========================================================
 # STEP 3: CURL request to update existing `pflink` auth URL  
 # =========================================================
-curl -X 'PUT' \
+curl -s -X 'PUT' \
   "$URL/pflink/authURL/?URL=$PFLINK_URL/auth-token" \
   -H 'accept: application/json' | jq
 
 # =========================================================  
 # STEP 4: CURL request to set the vault key
 # =========================================================
-curl -X 'PUT' \
+curl -s -X 'PUT' \
   "$URL/vaultKey/?key=$VAULTKEY" \
   -H 'accept: application/json' | jq
 
 # =========================================================
 # STEP 5: CURL request to set CUBE credentials
 # =========================================================
-curl -X 'POST' \
+curl -s -X 'POST' \
   "$URL/credentials/CUBE/?vaultKey=$VAULTKEY" \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
@@ -145,7 +157,7 @@ curl -X 'POST' \
 # =========================================================
 # STEP 6: CURL request to set orthanc credentials
 # =========================================================
-curl -X 'POST' \
+curl -s -X 'POST' \
   "$URL/credentials/Orthanc/?vaultKey=$VAULTKEY" \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
@@ -155,9 +167,14 @@ curl -X 'POST' \
 }' | jq
 
 # =========================================================
-# STEP 7: CURL request to get analysis settings
+# STEP 7: CURL request to set analysis feed name
 # =========================================================
-curl -X 'GET' \
-  "$URL/analysis/?vaultKey=$VAULTKEY" \
+curl -s -X 'PUT' \
+  "$URL/analysis/?analysis_name=$NAME&key=analysisFeedName&value=$FEEDNAME" \
   -H 'accept: application/json' | jq
 # =========================================================
+# STEP 8: CURL request to set analysis plugin name
+# =========================================================
+curl -s -X 'PUT' \
+  "$URL/analysis/?analysis_name=$NAME&key=analysisPluginName&value=$PLUGIN" \
+  -H 'accept: application/json' | jq
