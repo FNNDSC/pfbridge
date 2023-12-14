@@ -127,3 +127,10 @@ class clientResponseSchema(BaseModel):
     ErrorWorkflow:str               = ''
     ModelViolation:Any              = None
     ErrorComms:pflinkError          = pflinkError()
+
+class analyzeFunctionList(BaseModel):
+    """
+    Response model for storing the list of all
+    the analyze functions available.
+    """
+    methods: list[str]              = []

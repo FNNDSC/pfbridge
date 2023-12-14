@@ -266,6 +266,18 @@ def urlOrthanc_update(URL:str) -> relayModel.serviceURLs:
     update.urlOrthanc               = URL
     return update
 
+
+@router.get(
+    '/analyze_function/list/',
+    response_model  = list[str],
+    summary         = '''
+    GET the list of all analyze functions.
+    '''
+)
+async def retrieve_analyze_methods() -> list[str]:
+    return list(settings.analyses.analyses.keys())
+
+
 @router.put(
     '/analysis/',
     response_model  = settings.DylldAnalysis,
@@ -414,4 +426,6 @@ async def workflow_do(
             relayPayload, request, test
     )
     return d_ret
+
+
 
