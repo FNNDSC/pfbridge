@@ -17,7 +17,10 @@ DESC
     setup.sh is a helper script to override various Base
     Settings inside pfbridge such as service endpoints of
     pflink and analysis related settings such as username
-    and password of CUBE and orthanc
+    and password of CUBE and orthanc. We can also define
+    new analysis function and configure values to keys
+    such as plugin name, version, args; feed name and
+    pipeline
 
 ARGS
     [-h]
@@ -83,8 +86,11 @@ PASSWORDORTHANC='orthanc'
 NAME='default'
 FEEDNAME="$NAME-%PatientID-%SeriesInstanceUID-%SeriesDescription"
 PLUGIN='pl-simpledsapp'
+VERSION='2.1.0'
+ARGS=''
+PIPELINE=''
 
-while getopts "U:P:v:u:p:o:r:n:l:f:h" opt; do
+while getopts "U:P:v:u:p:o:r:n:l:f:s:a:e:h" opt; do
     case $opt in
         h) printf "%s" "$SYNOPSIS"; exit 1                ;;
 
@@ -108,6 +114,12 @@ while getopts "U:P:v:u:p:o:r:n:l:f:h" opt; do
 
         f) FEEDNAME=$OPTARG                               ;;
 
+        s) VERSION=$OPTARG                                ;;
+
+        a) ARGS=$OPTARG                                   ;;
+
+        e) PIPELINE=$OPTARG                               ;;
+
         *) exit 0                                         ;;
 
     esac
@@ -115,35 +127,35 @@ done
 
 #
 # =========================================================
-# STEP 1: CURL request to update existing `pflink` test URL
+echo "STEP 1: CURL request to update existing pflink test URL"
 # =========================================================
 curl -s -X 'PUT' \
   "$URL/pflink/testURL/?URL=$PFLINK_URL/testing" \
   -H 'accept: application/json' | jq
 
 # =========================================================
-# STEP 2: CURL request to update existing `pflink` prod URL
+echo "STEP 2: CURL request to update existing pflink prod URL"
 # =========================================================
 curl -s -X 'PUT' \
   "$URL/pflink/prodURL/?URL=$PFLINK_URL/workflow" \
   -H 'accept: application/json' | jq
 
 # =========================================================
-# STEP 3: CURL request to update existing `pflink` auth URL  
+echo "STEP 3: CURL request to update existing pflink auth URL"
 # =========================================================
 curl -s -X 'PUT' \
   "$URL/pflink/authURL/?URL=$PFLINK_URL/auth-token" \
   -H 'accept: application/json' | jq
 
 # =========================================================  
-# STEP 4: CURL request to set the vault key
+echo "STEP 4: CURL request to set the vault key"
 # =========================================================
 curl -s -X 'PUT' \
   "$URL/vaultKey/?key=$VAULTKEY" \
   -H 'accept: application/json' | jq
 
 # =========================================================
-# STEP 5: CURL request to set CUBE credentials
+echo "STEP 5: CURL request to set CUBE credentials"
 # =========================================================
 curl -s -X 'POST' \
   "$URL/credentials/CUBE/?vaultKey=$VAULTKEY" \
@@ -155,7 +167,7 @@ curl -s -X 'POST' \
 }' | jq
 
 # =========================================================
-# STEP 6: CURL request to set orthanc credentials
+echo "STEP 6: CURL request to set orthanc credentials"
 # =========================================================
 curl -s -X 'POST' \
   "$URL/credentials/Orthanc/?vaultKey=$VAULTKEY" \
@@ -167,14 +179,38 @@ curl -s -X 'POST' \
 }' | jq
 
 # =========================================================
-# STEP 7: CURL request to set analysis feed name
+echo "STEP 7: CURL request to set analysis feed name"
 # =========================================================
 curl -s -X 'PUT' \
   "$URL/analysis/?analysis_name=$NAME&key=analysisFeedName&value=$FEEDNAME" \
   -H 'accept: application/json' | jq
+
 # =========================================================
-# STEP 8: CURL request to set analysis plugin name
+echo "STEP 8: CURL request to set analysis plugin name"
 # =========================================================
 curl -s -X 'PUT' \
   "$URL/analysis/?analysis_name=$NAME&key=analysisPluginName&value=$PLUGIN" \
   -H 'accept: application/json' | jq
+
+# =========================================================
+echo "STEP 9: CURL request to set analysis plugin version"
+# =========================================================
+curl -s -X 'PUT' \
+  "$URL/analysis/?analysis_name=$NAME&key=analysisPluginVersion&value=$VERSION" \
+  -H 'accept: application/json' | jq
+
+# =========================================================
+echo "STEP 10: CURL request to set analysis plugin args"
+# =========================================================
+curl -s -X 'PUT' \
+  "$URL/analysis/?analysis_name=$NAME&key=analysisPluginArgs&value=$ARGS" \
+  -H 'accept: application/json' | jq
+
+# =========================================================
+echo "STEP 11: CURL request to set analysis pipeline name"
+# =========================================================
+curl -s -X 'PUT' \
+  "$URL/analysis/?analysis_name=$NAME&key=analysisPipelineName&value=$PIPELINE" \
+  -H 'accept: application/json' | jq
+
+# =========================================================
