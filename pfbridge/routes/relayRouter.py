@@ -355,8 +355,8 @@ def analysisValues_get(vaultKey:str = "", analysis_name:str = "") -> settings.Dy
         d_vaultAccess:credentialModel.credentialsStatus = credentialModel.credentialsStatus()
         d_vaultAccess = credentialRouter.credentialAccess_check(vaultKey)
         if d_vaultAccess.status:
-            settings.analysis_decode(analysis_name)
-            values = settings.analysisDecoded
+            decoded = settings.analysis_decode(analysis_name)
+            values = decoded
     return values
 
 @router.post(

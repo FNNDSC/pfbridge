@@ -52,7 +52,7 @@ def vaultCheckLock(vault:Vault) -> None:
         vault.locked        = True
         print("Vault check: key has already been set. Vault is now LOCKED.")
 
-def analysis_decode(key:str) -> None:
+def analysis_decode(key:str) -> DylldAnalysis:
     decode:pftag.Pftag  = pftag.Pftag({})
     addDict:bool = decode.lookupDict_add(
         [
@@ -78,8 +78,9 @@ def analysis_decode(key:str) -> None:
         ]
     )
     for field in ["pluginArgs", "pipelineName", "pluginName", "feedName", "pluginVersion"]:
-        d_decode:dict = decode(analyses.analyses[key].__getattribute__(field))
+        d_decode: dict = decode(analyses.analyses[key].__getattribute__(field))
         analysisDecoded.__setattr__(field, d_decode["result"])
+    return analysisDecoded
 
 pflink              = Pflink()
 analysis            = DylldAnalysis()
@@ -91,6 +92,6 @@ serviceURLs         = ServiceURLs()
 pflinkAuth          = PflinkAuth()
 pfdcm               = Pfdcm()
 analyses            = Analyses()
-analyses.analyses["dylld"] = analysisDecoded
+analyses.analyses["default"] = analysisDecoded
 
 
